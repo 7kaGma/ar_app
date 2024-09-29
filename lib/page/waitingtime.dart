@@ -3,8 +3,10 @@ import 'package:go_router/go_router.dart';
 import 'package:ar_app/component/btn_backhome.dart';
 import 'package:ar_app/component/btn_howtouse.dart';
 
+
 class Waitingtime extends StatefulWidget {
-  const Waitingtime({super.key});
+  const Waitingtime({super.key,required this.value});
+  final String value;
 
   @override
   State<Waitingtime> createState() => _WaitingtimeState();
@@ -23,6 +25,7 @@ class _WaitingtimeState extends State<Waitingtime> {
       ) ,
       body: Column(
         children: [
+          Text(widget.value),
           ElevatedButton(
             onPressed:(){
               context.push('/arcamera');

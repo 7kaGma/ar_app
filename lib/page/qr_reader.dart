@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:go_router/go_router.dart';
@@ -22,6 +23,42 @@ class _QrReaderState extends State<QrReader> {
 
   //変数_barcode
   Barcode? _barcode; 
+  
+  
+  void _handleBarcode(BarcodeCapture barcodes) {
+    if (mounted) {
+      setState(() {
+        _barcode = barcodes.barcodes.firstOrNull;
+      });
+    }
+  }
+
+  Map<String,dynamic>? _translateBarcode(Barcode? barcode){
+    final String? rawData = barcode?.displayValue;
+    if(rawData != null){
+      try{
+        final Map<String,dynamic> editData = jsonDecode(rawData);
+        return editData;
+      }catch(e){
+        print("JSON形式ではありません");
+      }
+    }  
+    return null;
+  }
+
+  void controllScreenTranslation(Barcode? barcode,MobileScannerController controller){
+    final editData = _translateBarcode(barcode);
+    if(editData != null){
+      if(editData["key"]=="seibu") {
+        controller.stop();
+        context.push('/waitingtime',extra:editData["value"]);
+      }else{
+        _barcode = null;
+      }
+    }else{
+      _barcode = null;
+    }
+  }
 
   // init関数
   @override
@@ -29,6 +66,7 @@ class _QrReaderState extends State<QrReader> {
     super.initState();
     checkCameraPremission(context, controller, this);
   }
+
   //dispose関数
   @override
   Future<void> dispose() async {
@@ -59,12 +97,8 @@ class _QrReaderState extends State<QrReader> {
               fit: BoxFit.contain,
               // QRコードをスキャンしたら実行する関数
               onDetect: (scandata) {
-                controller.stop();
-                setState(() {
-                  _barcode = scandata.barcodes.first;
-                });
-                print(_barcode?.rawValue);
-                context.push('/waitingtime');
+                _handleBarcode(scandata);
+                controllScreenTranslation(_barcode, controller);
               },
             ),
           )

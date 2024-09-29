@@ -27,7 +27,10 @@ final goRouter = GoRouter(
     GoRoute(
       path: '/waitingtime',
       name: 'waitingtime',
-      builder: (context, state) => const Waitingtime(),
+      builder: (context, state) {
+        final value = state.extra as String;
+        return Waitingtime(value:value);
+      } 
       ),
     // arcamera
     GoRoute(
