@@ -84,26 +84,27 @@ class _QrReaderState extends State<QrReader> {
         title: const Text("QR Reader"),
         actions: const [HowtouseBtn()],
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+      body:Stack(
         children: [
-          // SizedBox=指定したサイズの長方形widgetを作成
-          SizedBox(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            // MobileScanerWidget
-            child: MobileScanner(
+          Center(
+            child:MobileScanner(
               controller: controller,
               fit: BoxFit.contain,
               // QRコードをスキャンしたら実行する関数
               onDetect: (scandata) {
                 _handleBarcode(scandata);
                 controllScreenTranslation(_barcode, controller);
-              },
+              }
+            ) 
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              height: 100,
             ),
           )
         ],
-      ),
+      ) 
     );
   }
 }

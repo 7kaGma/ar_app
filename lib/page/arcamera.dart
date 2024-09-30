@@ -13,8 +13,7 @@ class Arcamera extends StatefulWidget {
 }
 
 class _ArcameraState extends State<Arcamera> {
-
-    String count = '0';
+  String count = '0';
 
   //init関数
   @override
@@ -37,31 +36,33 @@ class _ArcameraState extends State<Arcamera> {
   ScreenshotController screenshotController = ScreenshotController();
   Future<void> takePhoto() async {
     Uint8List? capturedImage = await screenshotController.capture();
-    if(capturedImage !=null){
-      context.push('/preview',extra:capturedImage);
-    }else{
+    if (capturedImage != null) {
+      context.push('/preview', extra: capturedImage);
+    } else {
       print("error");
     }
   }
 
   // Unity処理
-  late UnityWidgetController? _unityWidgetController;
-  void onUnityCreated(UnityWidgetController controller){
+  UnityWidgetController? _unityWidgetController;
+  void onUnityCreated(UnityWidgetController controller) {
     _unityWidgetController = controller;
   }
 
-  void onUnityMessage(dynamic message){
+  void onUnityMessage(dynamic message) {
     setState(() {
       count = message.toString();
     });
   }
 
-  void sendNumber(int number){
-    _unityWidgetController?.postMessage(
-      '3dmodel', 
-      'SwitchObject', 
-      number.toString(),
-    );
+  void sendNumber(int number) {
+    if (_unityWidgetController != null) {
+      _unityWidgetController?.postMessage(
+        'ArModel',
+        'SwitchObject',
+        number.toString(),
+      );
+    } 
   }
 
   @override
@@ -90,12 +91,13 @@ class _ArcameraState extends State<Arcamera> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     IconButton(
-                      onPressed: () => {print("switch")},
+                      onPressed: () => {
+                        print("switch")
+                      },
                       icon: const Icon(Icons.cameraswitch),
                     ),
                     ElevatedButton(
-                        onPressed: () => takePhoto(),
-                        child: const Text("仮")),
+                        onPressed: () => takePhoto(), child: const Text("仮")),
                     IconButton(
                       onPressed: () => {
                         sendNumber(1),
