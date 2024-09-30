@@ -31,11 +31,6 @@ class _HomeState extends State<Home> {
                 context.push('/webpage');
               },
               child: const Text("公式サイト")),
-          ElevatedButton(
-              onPressed: () {
-                context.push('/waitingtime');
-              },
-              child: const Text("AR"))
         ])));
   }
 }

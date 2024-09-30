@@ -37,7 +37,7 @@ class _ArcameraState extends State<Arcamera> {
   Future<void> takePhoto() async {
     Uint8List? capturedImage = await screenshotController.capture();
     if (capturedImage != null) {
-      context.push('/preview', extra: capturedImage);
+      context.push('/qrreader/waitingtime/arcamera/preview', extra: capturedImage);
     } else {
       print("error");
     }

@@ -17,7 +17,7 @@ class _WebpageState extends State<Webpage> {
     super.initState();
     contlloer = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..loadRequest(Uri.parse("https://www.seibu-leisure.co.jp/amusementpark"))
+      ..loadRequest(Uri.parse("https://www.usj.co.jp/web/ja/jp"))
       ..enableZoom(true)
       ..clearCache();
   }

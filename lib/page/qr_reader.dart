@@ -16,15 +16,14 @@ class QrReader extends StatefulWidget {
 class _QrReaderState extends State<QrReader> {
   // MobileScannerController
   final MobileScannerController controller = MobileScannerController(
-    autoStart: false,// 自動で起動
-    torchEnabled: false,// Flashライトのオンオフ
-    useNewCameraSelector: true,//最新のカメラ機能を使うか
+    autoStart: false, // 自動で起動
+    torchEnabled: false, // Flashライトのオンオフ
+    useNewCameraSelector: true, //最新のカメラ機能を使うか
   );
 
   //変数_barcode
-  Barcode? _barcode; 
-  
-  
+  Barcode? _barcode;
+
   void _handleBarcode(BarcodeCapture barcodes) {
     if (mounted) {
       setState(() {
@@ -33,29 +32,30 @@ class _QrReaderState extends State<QrReader> {
     }
   }
 
-  Map<String,dynamic>? _translateBarcode(Barcode? barcode){
+  Map<String, dynamic>? _translateBarcode(Barcode? barcode) {
     final String? rawData = barcode?.displayValue;
-    if(rawData != null){
-      try{
-        final Map<String,dynamic> editData = jsonDecode(rawData);
+    if (rawData != null) {
+      try {
+        final Map<String, dynamic> editData = jsonDecode(rawData);
         return editData;
-      }catch(e){
+      } catch (e) {
         print("JSON形式ではありません");
       }
-    }  
+    }
     return null;
   }
 
-  void controllScreenTranslation(Barcode? barcode,MobileScannerController controller){
+  void controllScreenTranslation(
+      Barcode? barcode, MobileScannerController controller) {
     final editData = _translateBarcode(barcode);
-    if(editData != null){
-      if(editData["key"]=="seibu") {
+    if (editData != null) {
+      if (editData["key"] == "usj") {
         controller.stop();
-        context.push('/waitingtime',extra:editData["value"]);
-      }else{
+        context.push('/qrreader/waitingtime', extra: editData["value"]);
+      } else {
         _barcode = null;
       }
-    }else{
+    } else {
       _barcode = null;
     }
   }
@@ -79,32 +79,29 @@ class _QrReaderState extends State<QrReader> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text("QR Reader"),
-        actions: const [HowtouseBtn()],
-      ),
-      body:Stack(
-        children: [
-          Center(
-            child:MobileScanner(
-              controller: controller,
-              fit: BoxFit.contain,
-              // QRコードをスキャンしたら実行する関数
-              onDetect: (scandata) {
-                _handleBarcode(scandata);
-                controllScreenTranslation(_barcode, controller);
-              }
-            ) 
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              height: 100,
-            ),
-          )
-        ],
-      ) 
-    );
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          title: const Text("QR Reader"),
+          actions: const [HowtouseBtn()],
+        ),
+        body: Stack(
+          children: [
+            Center(
+                child: MobileScanner(
+                    controller: controller,
+                    fit: BoxFit.contain,
+                    // QRコードをスキャンしたら実行する関数
+                    onDetect: (scandata) {
+                      _handleBarcode(scandata);
+                      controllScreenTranslation(_barcode, controller);
+                    })),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                height: 100,
+              ),
+            )
+          ],
+        ));
   }
 }

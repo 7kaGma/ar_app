@@ -29,7 +29,7 @@ class _WaitingtimeState extends State<Waitingtime> {
               Text(widget.value),
               ElevatedButton(
                   onPressed: () {
-                    context.push('/arcamera');
+                    context.push('/qrreader/waitingtime/arcamera');
                   },
                   child: const Text('写真を撮る'))
             ],

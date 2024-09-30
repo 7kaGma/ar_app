@@ -16,38 +16,46 @@ final goRouter = GoRouter(
       path: '/',
       name:'home',
       builder: (context, state) => const Home(),
+      routes: [
+        // QRReader
+        GoRoute(
+          path: 'qrreader',
+          name: 'qrreader',
+          builder: (context, state) => const QrReader(),
+          routes: [
+            // waitingtime
+            GoRoute(
+              path: 'waitingtime',
+              name: 'waitingtime',
+              builder: (context, state) {
+                final value = state.extra as String;
+                return Waitingtime(value:value);
+              } ,
+              routes: [
+                 // arcamera
+                GoRoute(
+                  path: 'arcamera',
+                  name: 'arcamera',
+                  builder: (context, state)=> const Arcamera(),
+                  routes: [
+                    // preview
+                    GoRoute(
+                      path: 'preview',
+                      name: 'preview',
+                      builder: (context, state) {
+                        final capturedImage = state.extra as Uint8List;
+                        return Preview(capturedImage:capturedImage);
+                      },
+                    ),
+                  ]
+                ),
+              ]
+            ),
+          ]
+        ),
+      ]
     ),
-    // QRReader
-    GoRoute(
-      path: '/qrreader',
-      name: 'qrreader',
-      builder: (context, state) => const QrReader(),
-    ),
-    // waitingtime
-    GoRoute(
-      path: '/waitingtime',
-      name: 'waitingtime',
-      builder: (context, state) {
-        final value = state.extra as String;
-        return Waitingtime(value:value);
-      } 
-      ),
-    // arcamera
-    GoRoute(
-      path: '/arcamera',
-      name: 'arcamera',
-      builder: (context, state)=> const Arcamera(),
-      ),
-    // preview
-    GoRoute(
-      path: '/preview',
-      name: 'preview',
-      builder: (context, state) {
-        final capturedImage = state.extra as Uint8List;
-        return Preview(capturedImage:capturedImage);
-      },
-    ),
-
+    
     /*==========
     サブページ
     ==========*/
