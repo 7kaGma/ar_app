@@ -12,21 +12,21 @@ class Waitingtime extends StatefulWidget {
   State<Waitingtime> createState() => _WaitingtimeState();
 }
 
-class _WaitingtimeState extends State<Waitingtime> with WidgetsBindingObserver{
-
+class _WaitingtimeState extends State<Waitingtime> with WidgetsBindingObserver {
   // タイマー
   Timer? timer;
   // 管理する時間
-  late DateTime time;
+  late Duration time;
   // Duration
   late DateTime backgroundStartTime;
-  late Duration durationTime;
+  late Duration backgroundDurationTime;
+  late String stage = 'ステージ1';
 
-@override
+  @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    time = DateTime.utc(0,0,0);
+    time = Duration.zero;
     countTime();
   }
 
@@ -37,8 +37,6 @@ class _WaitingtimeState extends State<Waitingtime> with WidgetsBindingObserver{
     super.dispose();
   }
 
-  
-
   // バックグラウンドでの処理
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -48,31 +46,42 @@ class _WaitingtimeState extends State<Waitingtime> with WidgetsBindingObserver{
       backgroundStartTime = onPaused();
     } else if (state == AppLifecycleState.resumed) {
       //フォアグラウンドに遷移したとき
-      durationTime = calcDurationTime(backgroundStartTime);
-      time = time.add(Duration(seconds: durationTime.inSeconds));
+      backgroundDurationTime = calcBackgroundDurationTime(backgroundStartTime);
+      time = time + backgroundDurationTime;
       countTime();
     }
   }
 
   DateTime onPaused() {
-    DateTime startTime = DateTime.now();
-    return startTime;
+    return DateTime.now();
   }
 
-  Duration calcDurationTime(DateTime startTime) {
-    Duration backgroundDuration = DateTime.now().difference(startTime);
-    return backgroundDuration;
+  Duration calcBackgroundDurationTime(DateTime startTime) {
+    return DateTime.now().difference(startTime);
   }
 
-  void countTime (){
-    timer = Timer.periodic(
-      const Duration(seconds: 1), 
-      (Timer timer){
-        setState(() {
-          time = time.add((const Duration(seconds: 1)));
-        });
-      }
-      );
+  void countTime() {
+    timer = Timer.periodic(const Duration(seconds: 60), (Timer timer) {
+      setState(() {
+        time = time + const Duration(seconds: 60);
+      });
+    });
+    getStaging(time);
+  }
+
+  void getStaging(Duration time) {
+    int waitingTime = time.inMinutes;
+    if (waitingTime < 120) {
+      int divide = 15;
+      int stageNumber = (waitingTime ~/ divide) + 1;
+      setState(() {
+        stage = 'ステージ${stageNumber.toString()}';
+      });
+    } else if (120 <= waitingTime) {
+      setState(() {
+        stage = 'ステージMAX';
+      });
+    }
   }
 
   @override
@@ -91,7 +100,8 @@ class _WaitingtimeState extends State<Waitingtime> with WidgetsBindingObserver{
             children: [
               Text(widget.value),
               const Text('待ち時間'),
-              Text('${time.minute.toString()}分'),
+              Text('${time.inMinutes.toString()}分'),
+              Text(stage),
               ElevatedButton(
                   onPressed: () {
                     context.push('/qrreader/waitingtime/arcamera');
