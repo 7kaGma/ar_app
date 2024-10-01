@@ -7,7 +7,8 @@ import 'package:ar_app/component/btn_howtouse.dart';
 import 'package:screenshot/screenshot.dart';
 
 class Arcamera extends StatefulWidget {
-  const Arcamera({super.key});
+  const Arcamera({super.key, required this.stageNumber});
+  final int stageNumber;
   @override
   State<Arcamera> createState() => _ArcameraState();
 }
@@ -37,7 +38,8 @@ class _ArcameraState extends State<Arcamera> {
   Future<void> takePhoto() async {
     Uint8List? capturedImage = await screenshotController.capture();
     if (capturedImage != null) {
-      context.push('/qrreader/waitingtime/arcamera/preview', extra: capturedImage);
+      context.push('/qrreader/waitingtime/arcamera/preview',
+          extra: capturedImage);
     } else {
       print("error");
     }
@@ -62,7 +64,7 @@ class _ArcameraState extends State<Arcamera> {
         'SwitchObject',
         number.toString(),
       );
-    } 
+    }
   }
 
   @override
@@ -91,16 +93,41 @@ class _ArcameraState extends State<Arcamera> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     IconButton(
-                      onPressed: () => {
-                        print("switch")
-                      },
+                      onPressed: () => {print("switch")},
                       icon: const Icon(Icons.cameraswitch),
                     ),
                     ElevatedButton(
                         onPressed: () => takePhoto(), child: const Text("仮")),
                     IconButton(
                       onPressed: () => {
-                        sendNumber(1),
+                        showModalBottomSheet(
+                            context: context,
+                            builder: (context) => Container(
+                                  height: MediaQuery.of(context).size.height *
+                                      (2 / 3),
+                                  child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: GridView.builder(
+                                        gridDelegate:
+                                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                                crossAxisCount: 3,
+                                                crossAxisSpacing: 10.0,
+                                                mainAxisSpacing: 10.0),
+                                        itemCount: 8,
+                                        itemBuilder: (context, index) {
+                                          return ElevatedButton(
+                                            onPressed: widget.stageNumber >= index
+                                              ? () {
+                                                setState(() {
+                                                sendNumber(index);
+                                              });
+                                            }
+                                            : null, // stageNumber が index より小さい場合ボタンは無効化
+                                            child: Text('ボタン${index.toString()}'),
+                                          );
+                                        },
+                                      )),
+                                ))
                       },
                       icon: const Icon(
                         Icons.palette,

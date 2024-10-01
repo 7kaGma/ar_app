@@ -20,7 +20,8 @@ class _WaitingtimeState extends State<Waitingtime> with WidgetsBindingObserver {
   // Duration
   late DateTime backgroundStartTime;
   late Duration backgroundDurationTime;
-  late String stage = 'ステージ1';
+  String stage = 'ステージ1';
+  int stageNumber = 0;
 
   @override
   void initState() {
@@ -64,18 +65,18 @@ class _WaitingtimeState extends State<Waitingtime> with WidgetsBindingObserver {
     timer = Timer.periodic(const Duration(seconds: 60), (Timer timer) {
       setState(() {
         time = time + const Duration(seconds: 60);
+        getStaging(time);
       });
     });
-    getStaging(time);
   }
 
   void getStaging(Duration time) {
     int waitingTime = time.inMinutes;
     if (waitingTime < 120) {
       int divide = 15;
-      int stageNumber = (waitingTime ~/ divide) + 1;
+      stageNumber = (waitingTime ~/ divide);
       setState(() {
-        stage = 'ステージ${stageNumber.toString()}';
+        stage = 'ステージ${(stageNumber + 1).toString()}';
       });
     } else if (120 <= waitingTime) {
       setState(() {
@@ -104,7 +105,8 @@ class _WaitingtimeState extends State<Waitingtime> with WidgetsBindingObserver {
               Text(stage),
               ElevatedButton(
                   onPressed: () {
-                    context.push('/qrreader/waitingtime/arcamera');
+                    context.push('/qrreader/waitingtime/arcamera',
+                        extra: stageNumber);
                   },
                   child: const Text('写真を撮る'))
             ],

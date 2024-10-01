@@ -13,49 +13,48 @@ final goRouter = GoRouter(
   routes: [
     // Home
     GoRoute(
-      path: '/',
-      name:'home',
-      builder: (context, state) => const Home(),
-      routes: [
-        // QRReader
-        GoRoute(
-          path: 'qrreader',
-          name: 'qrreader',
-          builder: (context, state) => const QrReader(),
-          routes: [
-            // waitingtime
-            GoRoute(
-              path: 'waitingtime',
-              name: 'waitingtime',
-              builder: (context, state) {
-                final value = state.extra as String;
-                return Waitingtime(value:value);
-              } ,
+        path: '/',
+        name: 'home',
+        builder: (context, state) => const Home(),
+        routes: [
+          // QRReader
+          GoRoute(
+              path: 'qrreader',
+              name: 'qrreader',
+              builder: (context, state) => const QrReader(),
               routes: [
-                 // arcamera
+                // waitingtime
                 GoRoute(
-                  path: 'arcamera',
-                  name: 'arcamera',
-                  builder: (context, state)=> const Arcamera(),
-                  routes: [
-                    // preview
-                    GoRoute(
-                      path: 'preview',
-                      name: 'preview',
-                      builder: (context, state) {
-                        final capturedImage = state.extra as Uint8List;
-                        return Preview(capturedImage:capturedImage);
-                      },
-                    ),
-                  ]
-                ),
-              ]
-            ),
-          ]
-        ),
-      ]
-    ),
-    
+                    path: 'waitingtime',
+                    name: 'waitingtime',
+                    builder: (context, state) {
+                      final value = state.extra as String;
+                      return Waitingtime(value: value);
+                    },
+                    routes: [
+                      // arcamera
+                      GoRoute(
+                          path: 'arcamera',
+                          name: 'arcamera',
+                          builder: (context, state) {
+                            final stageNumber = state.extra as int;
+                            return Arcamera(stageNumber: stageNumber);
+                          },
+                          routes: [
+                            // preview
+                            GoRoute(
+                              path: 'preview',
+                              name: 'preview',
+                              builder: (context, state) {
+                                final capturedImage = state.extra as Uint8List;
+                                return Preview(capturedImage: capturedImage);
+                              },
+                            ),
+                          ]),
+                    ]),
+              ]),
+        ]),
+
     /*==========
     サブページ
     ==========*/

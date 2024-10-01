@@ -26,52 +26,53 @@ class Preview extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
       ),
-      body: Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Expanded(
-            child: ClipRRect(
+      body: Stack(
+          children: [
+            Center(
+              child: ClipRRect(
               borderRadius: BorderRadius.circular(16.0),
               child: Image.memory(
                 capturedImage,
                 fit: BoxFit.cover,
-                width: double.infinity,
+                // width: double.infinity,
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              ElevatedButton.icon(
-                onPressed: () {
-                  saveCapturedImage(capturedImage, context);
-                },
-                icon: const Icon(Icons.save),
-                label: const Text('保存する'),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  backgroundColor: Colors.green,
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: SizedBox(
+                height: 100,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        saveCapturedImage(capturedImage, context);
+                      },
+                      icon: const Icon(Icons.save),
+                      label: const Text('保存する'),
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        backgroundColor: Colors.green,
+                      ),
+                    ),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      icon: const Icon(Icons.arrow_back),
+                      label: const Text('戻る'),
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        backgroundColor: Colors.redAccent,
+                      ),
+                    ),
+                  ]
                 ),
-              ),
-              ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                icon: const Icon(Icons.arrow_back),
-                label: const Text('戻る'),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  backgroundColor: Colors.redAccent,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    ),
-    );
+              )
+            ),
+          ]
+        )
+      );
   }
 }
