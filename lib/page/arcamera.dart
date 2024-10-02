@@ -5,6 +5,7 @@ import 'package:flutter_unity_widget/flutter_unity_widget.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:ar_app/component/btn_howtouse.dart';
 import 'package:screenshot/screenshot.dart';
+// import 'package:camera/camera.dart';
 
 class Arcamera extends StatefulWidget {
   const Arcamera({super.key, required this.stageNumber});
@@ -14,7 +15,7 @@ class Arcamera extends StatefulWidget {
 }
 
 class _ArcameraState extends State<Arcamera> {
-  String count = '0';
+  String count = '0'; //Unityからの通信用＿現状不要
 
   //init関数
   @override
@@ -29,7 +30,7 @@ class _ArcameraState extends State<Arcamera> {
       // すでにカメラの権限が許可されている場合
     } else {
       // カメラの権限が許可されていない場合、リクエストする
-      await Permission.camera.request();
+      PermissionStatus status = await Permission.camera.request();
     }
   }
 
@@ -72,7 +73,6 @@ class _ArcameraState extends State<Arcamera> {
     return Scaffold(
         appBar: AppBar(
           title: Text(count),
-          actions: const [HowtouseBtn()],
         ),
         backgroundColor: Colors.black,
         body: Stack(
@@ -116,14 +116,16 @@ class _ArcameraState extends State<Arcamera> {
                                         itemCount: 8,
                                         itemBuilder: (context, index) {
                                           return ElevatedButton(
-                                            onPressed: widget.stageNumber >= index
-                                              ? () {
-                                                setState(() {
-                                                sendNumber(index);
-                                              });
-                                            }
-                                            : null, // stageNumber が index より小さい場合ボタンは無効化
-                                            child: Text('ボタン${index.toString()}'),
+                                            onPressed: widget.stageNumber >=
+                                                    index
+                                                ? () {
+                                                    setState(() {
+                                                      sendNumber(index);
+                                                    });
+                                                  }
+                                                : null, // stageNumber が index より小さい場合ボタンは無効化
+                                            child:
+                                                Text('ボタン${index.toString()}'),
                                           );
                                         },
                                       )),

@@ -93,7 +93,6 @@ class _WaitingtimeState extends State<Waitingtime> with WidgetsBindingObserver {
           automaticallyImplyLeading: false,
           leading: const BackHomeBtn(),
           title: const Text("WaitingTime"),
-          actions: const [HowtouseBtn()],
         ),
         body: Center(
           child: Column(

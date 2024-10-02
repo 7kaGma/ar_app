@@ -1,3 +1,8 @@
+import 'package:ar_app/component/appbar_custom.dart';
+import 'package:ar_app/component/margin_for_btn.dart';
+import 'package:ar_app/component/btn_primary.dart';
+import 'package:ar_app/component/btn_secondary.dart';
+import 'package:ar_app/constant/colors_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ar_app/component/btn_howtouse.dart';
@@ -13,24 +18,60 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: const Text("Home"),
-          actions: const [HowtouseBtn()],
+        body: Stack(children: [
+      // AppBar
+      const Positioned(
+        top: 0,
+        left: 0,
+        right: 0,
+        child: AppBarCustom(
+          actions: [BtnHowtouse()],
         ),
-        body: Center(
-            child:
-                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          ElevatedButton(
-              onPressed: () {
-                context.push('/qrreader');
-              },
-              child: const Text("列に並ぶ")),
-          ElevatedButton(
-              onPressed: () {
-                context.push('/webpage');
-              },
-              child: const Text("公式サイト")),
-        ])));
+      ),
+      //Main
+      Container(
+          width: double.infinity,
+          height: double.infinity,
+          decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: <Color>[
+                ColorConstants.backgroundColor,
+                ColorConstants.backgroundColorGradietEnd
+              ],
+                  stops: [
+                0.5,
+                1
+              ])),
+          child: Padding(
+              padding: const EdgeInsets.all(30),
+              child: SafeArea(
+                  child: Stack(
+                children: [
+                  Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          BtnPrimary(
+                              onPressed: () {
+                                context.push('/qrreader');
+                              },
+                              text: "待機列に並ぶ"),
+                          const MarginForBtn(),
+                          BtnSecondary(
+                              onPressed: () {
+                                context.push('/webpage');
+                              },
+                              text: "USJ公式サイト"),
+                          const SizedBox(
+                            height: 70,
+                          ),
+                        ],
+                      ))
+                ],
+              )))),
+    ]));
   }
 }

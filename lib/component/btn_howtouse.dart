@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class HowtouseBtn extends StatelessWidget {
-  const HowtouseBtn({super.key});
+class BtnHowtouse extends StatelessWidget {
+  const BtnHowtouse({super.key});
 
   // ボタンの構成
   @override

@@ -1,5 +1,5 @@
 import 'dart:typed_data';
-import 'package:ar_app/component/check_dialog.dart';
+import 'package:ar_app/component/dialog_check.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:flutter/material.dart';
 

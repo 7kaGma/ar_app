@@ -82,7 +82,6 @@ class _QrReaderState extends State<QrReader> {
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: const Text("QR Reader"),
-          actions: const [HowtouseBtn()],
         ),
         body: Stack(
           children: [
