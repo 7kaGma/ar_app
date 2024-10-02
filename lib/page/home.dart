@@ -18,18 +18,11 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Stack(children: [
-      // AppBar
-      const Positioned(
-        top: 0,
-        left: 0,
-        right: 0,
-        child: AppBarCustom(
-          actions: [BtnHowtouse()],
-        ),
+      extendBodyBehindAppBar: true, // AppBarの背後にbodyを拡張
+      appBar: const AppBarCustom(
+        actions: [BtnHowtouse()],
       ),
-      //Main
-      Container(
+      body: Container(
           width: double.infinity,
           height: double.infinity,
           decoration: const BoxDecoration(
@@ -72,6 +65,6 @@ class _HomeState extends State<Home> {
                       ))
                 ],
               )))),
-    ]));
+    );
   }
 }

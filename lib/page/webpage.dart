@@ -1,3 +1,5 @@
+import 'package:ar_app/component/appbar_custom.dart';
+import 'package:ar_app/component/btn_backward.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -25,10 +27,11 @@ class _WebpageState extends State<Webpage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: const Text("Webpage"),
-        ),
-        body: WebViewWidget(controller: contlloer));
+      extendBodyBehindAppBar: true, // AppBarの背後にbodyを拡張
+      appBar: const AppBarCustom(
+        leading: BtnBackward(),
+      ),
+      body: WebViewWidget(controller: contlloer),
+    );
   }
 }
