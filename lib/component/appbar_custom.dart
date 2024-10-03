@@ -6,10 +6,12 @@ class AppBarCustom extends StatelessWidget implements PreferredSizeWidget {
       {super.key,
       this.leading,
       this.actions,
-      this.iconColor = ColorConstants.appBarIconColor});
+      this.iconColor = ColorConstants.appBarIconColor,
+      this.appBarColor = ColorConstants.appBarColor});
   final Widget? leading;
   final List<Widget>? actions;
   final Color iconColor;
+  final Color appBarColor;
 
   // AppBarのサイズを指定、kToolbarHeightはデフォ値
   @override
@@ -18,7 +20,7 @@ class AppBarCustom extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: ColorConstants.appBarColor,
+      backgroundColor: appBarColor,
       elevation: 0,
       automaticallyImplyLeading: false,
       leading: Padding(padding: const EdgeInsets.only(left:16), child: leading),

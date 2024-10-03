@@ -1,7 +1,10 @@
+import 'package:ar_app/component/appbar_custom.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ar_app/component/btn_backhome.dart';
 import 'package:ar_app/component/btn_howtouse.dart';
+import 'package:ar_app/component/btn_primary.dart';
+import 'package:ar_app/constant/colors_constant.dart';
 import 'dart:async';
 
 class Waitingtime extends StatefulWidget {
@@ -88,28 +91,71 @@ class _WaitingtimeState extends State<Waitingtime> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          automaticallyImplyLeading: false,
-          leading: const BackHomeBtn(),
-          title: const Text("WaitingTime"),
+        extendBodyBehindAppBar: true, // AppBarの背後にbodyを拡張
+        appBar: const AppBarCustom(
+          leading: BtnBackhome(),
+          actions: [BtnHowtouse()],
         ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(widget.value),
-              const Text('待ち時間'),
-              Text('${time.inMinutes.toString()}分'),
-              Text(stage),
-              ElevatedButton(
-                  onPressed: () {
-                    context.push('/qrreader/waitingtime/arcamera',
-                        extra: stageNumber);
-                  },
-                  child: const Text('写真を撮る'))
-            ],
-          ),
-        ));
+        body: Container(
+            width: double.infinity,
+            height: double.infinity,
+            decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: <Color>[
+                  ColorConstants.backgroundColor,
+                  ColorConstants.backgroundColorGradietEnd
+                ],
+                    stops: [
+                  0.5,
+                  1
+                ])),
+            child: Padding(
+                padding: const EdgeInsets.all(30),
+                child: SafeArea(
+                  child: Stack(
+                    children: [
+                      Align(
+                          alignment: Alignment.topCenter,
+                          child: Container(
+                            decoration:BoxDecoration(
+                              color: ColorConstants.backgroundColorSub.withOpacity(0.4),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(30),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(widget.value),
+                                  const Text('待ち時間'),
+                                  Text('${time.inMinutes.toString()}分'),
+                                  Text(stage),
+                                ],
+                              ),
+                            ),
+                          )),
+                      Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              BtnPrimary(
+                                onPressed: () {
+                                  context.push('/qrreader/waitingtime/arcamera',
+                                      extra: stageNumber);
+                                },
+                                text: "写真を撮る",
+                              ),
+                              const SizedBox(
+                                height: 140,
+                              ),
+                            ],
+                          ))
+                    ],
+                  ),
+                ))));
   }
 }

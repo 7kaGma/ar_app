@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'package:ar_app/component/appbar_custom.dart';
 import 'package:ar_app/component/dialog_check.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:flutter/material.dart';
@@ -24,8 +25,9 @@ class Preview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-      ),
+      extendBodyBehindAppBar: true, // AppBarの背後にbodyを拡張
+        appBar: const AppBarCustom(
+        ),
       body: Stack(
           children: [
             Center(

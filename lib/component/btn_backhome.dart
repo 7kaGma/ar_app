@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class BackHomeBtn extends StatelessWidget {
-  const BackHomeBtn({super.key});
+class BtnBackhome extends StatelessWidget {
+  const BtnBackhome({super.key});
 
   // ボタンの構成
   @override

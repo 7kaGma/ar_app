@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:ar_app/component/appbar_custom.dart';
+import 'package:ar_app/component/btn_backward.dart';
+import 'package:ar_app/constant/colors_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ar_app/component/btn_howtouse.dart';
 import 'package:ar_app/services/camera_permission.dart';
 
 class QrReader extends StatefulWidget {
@@ -48,7 +50,7 @@ class _QrReaderState extends State<QrReader> {
   void controllScreenTranslation(
       Barcode? barcode, MobileScannerController controller) {
     final editData = _translateBarcode(barcode);
-    if (editData != null) {
+    if (editData != null && editData.containsKey("value")) {
       if (editData["key"] == "usj") {
         controller.stop();
         context.push('/qrreader/waitingtime', extra: editData["value"]);
@@ -79,27 +81,50 @@ class _QrReaderState extends State<QrReader> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: const Text("QR Reader"),
+        extendBodyBehindAppBar: true, // AppBarの背後にbodyを拡張
+        appBar: const AppBarCustom(
+          leading: const BtnBackward(),
         ),
         body: Stack(
           children: [
-            Center(
-                child: MobileScanner(
-                    controller: controller,
-                    fit: BoxFit.contain,
-                    // QRコードをスキャンしたら実行する関数
-                    onDetect: (scandata) {
-                      _handleBarcode(scandata);
-                      controllScreenTranslation(_barcode, controller);
-                    })),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                height: 100,
-              ),
-            )
+            MobileScanner(
+                controller: controller,
+                // QRコードをスキャンしたら実行する関数
+                onDetect: (scandata) {
+                  _handleBarcode(scandata);
+                  controllScreenTranslation(_barcode, controller);
+                }),
+            
+            Positioned.fill(
+                child: Column(
+              children: [
+                Expanded(
+                  child: Container(
+                    color: ColorConstants.backgroundColorSub 
+                  ),
+                ),
+                Center(
+                  child:AspectRatio(
+                  aspectRatio: 3 /4 ,
+                  child: Container(), 
+                )),
+                Expanded(
+                  child: Container(
+                    color: ColorConstants.backgroundColorSub,
+                    child: const Center(
+                      child: Text(
+                        '入口のQRコードを読み込んでください',
+                        style: TextStyle(
+                          color:ColorConstants.fontColor,
+                          fontSize: 16
+                        ),
+                      ),
+                    ),
+
+                  ),
+                )
+              ],
+            ))
           ],
         ));
   }
