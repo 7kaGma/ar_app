@@ -43,6 +43,15 @@ class _HomeState extends State<Home> {
                   child: Stack(
                 children: [
                   Align(
+                      alignment: Alignment.topCenter,
+                      child: Padding(
+                          padding: const EdgeInsets.only(top: 170),
+                          child: Image.asset(
+                            'assets/images/logo.png',
+                            width: 200,
+                            height: 200,
+                          ))),
+                  Align(
                       alignment: Alignment.bottomCenter,
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
