@@ -59,7 +59,10 @@ class _WaitingtimeState extends State<Waitingtime> with WidgetsBindingObserver {
     } else if (state == AppLifecycleState.resumed) {
       //フォアグラウンドに遷移したとき
       backgroundDurationTime = calcBackgroundDurationTime(backgroundStartTime);
-      time = time + backgroundDurationTime;
+      setState(() {
+        time = time + backgroundDurationTime;
+        getStaging(time);
+      });
       countTime();
     }
   }
@@ -117,39 +120,96 @@ class _WaitingtimeState extends State<Waitingtime> with WidgetsBindingObserver {
                   image: AssetImage('assets/images/$bgImage'),
                   fit: BoxFit.cover,
                 )),
-                child: Padding(
-                    padding: const EdgeInsets.all(30),
-                    child: SafeArea(
-                      child: Stack(
-                        children: [
-                          Align(
-                              alignment: Alignment.topCenter,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: ColorConstants.backgroundColorSub
-                                      .withOpacity(0.4),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(30),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(widget.value),
-                                      const Text('待ち時間'),
-                                      Text('${time.inMinutes.toString()}分'),
-                                      Text(stage),
-                                    ],
-                                  ),
-                                ),
-                              )),
-                          Align(
-                              alignment: Alignment.bottomCenter,
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  ShadowForBtn(
+                child: Container(
+                    width: double.infinity,
+                    height: double.infinity,
+                    color: Colors.black.withOpacity(0.2),
+                    child: Padding(
+                        padding: const EdgeInsets.all(30),
+                        child: SafeArea(
+                            child: Column(
+                          children: [
+                            Expanded(
+                                flex: 1,
+                                child: Stack(
+                                  children: [
+                                    Align(
+                                        alignment: Alignment.bottomCenter,
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            SizedBox(
+                                              width: double.infinity,
+                                              child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(16),
+                                                  child: Text(widget.value,
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: const TextStyle(
+                                                          fontSize: 20,
+                                                          color: ColorConstants
+                                                              .fontColor,
+                                                          shadows: [
+                                                            Shadow(
+                                                                offset: Offset(
+                                                                    0, 0),
+                                                                blurRadius: 8,
+                                                                color: ColorConstants
+                                                                    .backgroundColorSub)
+                                                          ]))),
+                                            ),
+                                            const SizedBox(
+                                              height: 5,
+                                            ),
+                                            Container(
+                                              width: double.infinity,
+                                              decoration: BoxDecoration(
+                                                  color: ColorConstants
+                                                      .backgroundColorSub
+                                                      .withOpacity(0.7),
+                                                  shape: BoxShape.circle),
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(30),
+                                                child: Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    const Text('待ち時間',
+                                                        style: TextStyle(
+                                                            color: ColorConstants
+                                                                .fontColor)),
+                                                    Text(
+                                                        '${time.inMinutes.toString()}分',
+                                                        style: const TextStyle(
+                                                            fontSize: 48,
+                                                            color: ColorConstants
+                                                                .fontColor)),
+                                                    const SizedBox(
+                                                      height: 10,
+                                                    ),
+                                                    Text(stage,
+                                                        style: const TextStyle(
+                                                            fontSize: 20,
+                                                            color: ColorConstants
+                                                                .fontColor)),
+                                                  ],
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        ))
+                                  ],
+                                )),
+                            Expanded(
+                                flex: 1,
+                                child: Center(
+                                  child: ShadowForBtn(
                                       child: BtnPrimary(
                                     onPressed: () {
                                       context.push(
@@ -158,13 +218,8 @@ class _WaitingtimeState extends State<Waitingtime> with WidgetsBindingObserver {
                                     },
                                     text: "ARと写真を撮る",
                                   )),
-                                  const SizedBox(
-                                    height: 140,
-                                  ),
-                                ],
-                              ))
-                        ],
-                      ),
-                    )))));
+                                ))
+                          ],
+                        )))))));
   }
 }

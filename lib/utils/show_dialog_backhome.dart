@@ -7,7 +7,7 @@ void showDialogBackhome(BuildContext context) {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text("アプリを中断してホーム画面に戻りますか？"),
+          title: const Text("ホーム画面に戻りますか？"),
           content: const Text("待ち時間がリセットされます"),
           actions: [
             TextButton(

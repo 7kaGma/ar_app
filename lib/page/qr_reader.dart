@@ -83,7 +83,7 @@ class _QrReaderState extends State<QrReader> {
     return Scaffold(
         extendBodyBehindAppBar: true, // AppBarの背後にbodyを拡張
         appBar: const AppBarCustom(
-          leading: const BtnBackward(),
+          leading:  BtnBackward(),
         ),
         body: Stack(
           children: [
