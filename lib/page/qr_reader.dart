@@ -6,7 +6,7 @@ import 'package:ar_app/constant/colors_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ar_app/services/camera_permission.dart';
+import 'package:ar_app/utils/camera_permission.dart';
 
 class QrReader extends StatefulWidget {
   const QrReader({super.key});

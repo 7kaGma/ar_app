@@ -1,6 +1,7 @@
 import 'package:ar_app/component/appbar_custom.dart';
 import 'package:ar_app/component/shadow_for_btn.dart';
 import 'package:ar_app/constant/images_path.dart';
+import 'package:ar_app/utils/show_dialog_backhome.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ar_app/component/btn_backhome.dart';
@@ -97,67 +98,73 @@ class _WaitingtimeState extends State<Waitingtime> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        extendBodyBehindAppBar: true, // AppBarの背後にbodyを拡張
-        appBar: const AppBarCustom(
-          leading: BtnBackhome(),
-          actions: [BtnHowtouse()],
-        ),
-        body: Container(
-            width: double.infinity,
-            height: double.infinity,
-            decoration: BoxDecoration(
-                image: DecorationImage(
-              image: AssetImage('assets/images/$bgImage'),
-              fit: BoxFit.cover,
-            )),
-            child: Padding(
-                padding: const EdgeInsets.all(30),
-                child: SafeArea(
-                  child: Stack(
-                    children: [
-                      Align(
-                          alignment: Alignment.topCenter,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: ColorConstants.backgroundColorSub
-                                  .withOpacity(0.4),
-                              shape: BoxShape.circle,
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(30),
+    return PopScope(
+        canPop: false,
+        onPopInvokedWithResult: (didPop, result) {
+          showDialogBackhome(context);
+        },
+        child: Scaffold(
+            extendBodyBehindAppBar: true, // AppBarの背後にbodyを拡張
+            appBar: const AppBarCustom(
+              leading: BtnBackhome(),
+              actions: [BtnHowtouse()],
+            ),
+            body: Container(
+                width: double.infinity,
+                height: double.infinity,
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                  image: AssetImage('assets/images/$bgImage'),
+                  fit: BoxFit.cover,
+                )),
+                child: Padding(
+                    padding: const EdgeInsets.all(30),
+                    child: SafeArea(
+                      child: Stack(
+                        children: [
+                          Align(
+                              alignment: Alignment.topCenter,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: ColorConstants.backgroundColorSub
+                                      .withOpacity(0.4),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(30),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(widget.value),
+                                      const Text('待ち時間'),
+                                      Text('${time.inMinutes.toString()}分'),
+                                      Text(stage),
+                                    ],
+                                  ),
+                                ),
+                              )),
+                          Align(
+                              alignment: Alignment.bottomCenter,
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text(widget.value),
-                                  const Text('待ち時間'),
-                                  Text('${time.inMinutes.toString()}分'),
-                                  Text(stage),
+                                  ShadowForBtn(
+                                      child: BtnPrimary(
+                                    onPressed: () {
+                                      context.push(
+                                          '/qrreader/waitingtime/arcamera',
+                                          extra: stageNumber);
+                                    },
+                                    text: "ARと写真を撮る",
+                                  )),
+                                  const SizedBox(
+                                    height: 140,
+                                  ),
                                 ],
-                              ),
-                            ),
-                          )),
-                      Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              ShadowForBtn(
-                                  child: BtnPrimary(
-                                onPressed: () {
-                                  context.push('/qrreader/waitingtime/arcamera',
-                                      extra: stageNumber);
-                                },
-                                text: "写真を撮る",
-                              )),
-                              const SizedBox(
-                                height: 140,
-                              ),
-                            ],
-                          ))
-                    ],
-                  ),
-                ))));
+                              ))
+                        ],
+                      ),
+                    )))));
   }
 }

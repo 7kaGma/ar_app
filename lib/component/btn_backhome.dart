@@ -1,6 +1,6 @@
 import 'package:ar_app/constant/colors_constant.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import  'package:ar_app/utils/show_dialog_backhome.dart';
 
 class BtnBackhome extends StatelessWidget {
   const BtnBackhome({super.key});
@@ -11,32 +11,20 @@ class BtnBackhome extends StatelessWidget {
     return Align(
       alignment: Alignment.centerLeft,
       child: TextButton(
-        onPressed: () => {_showDialog(context)},
-        child: const Text(
+        onPressed: () => {showDialogBackhome(context)},
+        child:Text(
             "やめる",
-            style: TextStyle(color: ColorConstants.fontColor)
+            style: TextStyle(
+              color: ColorConstants.fontColor,
+              shadows: [
+                Shadow(
+                  offset: const Offset(2,2),
+                  blurRadius: 8.0,
+                  color: ColorConstants.backgroundColorSub.withOpacity(0.8)
+                )
+              ])
         ),
       ),
     );
-  }
-
-  // Dialogの表示
-  void _showDialog(BuildContext context) {
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return (AlertDialog(
-            title: const Text("アプリを中断してホーム画面に戻りますか？"),
-            content: const Text("待ち時間がリセットされます"),
-            actions: [
-              TextButton(
-                  child: const Text("OK"), onPressed: () => {context.go('/')}),
-              TextButton(
-                  child: const Text("キャンセル"),
-                  onPressed: () => {Navigator.of(context).pop()})
-            ],
-          ));
-        });
   }
 }
