@@ -24,6 +24,7 @@ class AppBarCustom extends StatelessWidget implements PreferredSizeWidget {
       elevation: 0,
       automaticallyImplyLeading: false,
       leading: Padding(padding: const EdgeInsets.only(left:16), child: leading),
+      leadingWidth: 200,
       iconTheme: IconThemeData(color: iconColor),
       actions: actions?.map((action){
         return Padding(

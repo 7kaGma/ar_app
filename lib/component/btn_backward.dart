@@ -12,7 +12,9 @@ class BtnBackward extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Align(
+      alignment: Alignment.centerLeft,
+      child:Container(
       decoration: BoxDecoration(
           shape: BoxShape.circle, color: bgColor.withOpacity(0.8)),
       child: IconButton(
@@ -24,6 +26,7 @@ class BtnBackward extends StatelessWidget {
           color: fontColor,
         ),
       ),
+    )
     );
   }
 }

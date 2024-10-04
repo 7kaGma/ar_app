@@ -1,4 +1,6 @@
 import 'package:ar_app/component/appbar_custom.dart';
+import 'package:ar_app/component/shadow_for_btn.dart';
+import 'package:ar_app/constant/images_path.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ar_app/component/btn_backhome.dart';
@@ -16,6 +18,8 @@ class Waitingtime extends StatefulWidget {
 }
 
 class _WaitingtimeState extends State<Waitingtime> with WidgetsBindingObserver {
+  //BGのパス
+  late String bgImage;
   // タイマー
   Timer? timer;
   // 管理する時間
@@ -32,6 +36,9 @@ class _WaitingtimeState extends State<Waitingtime> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     time = Duration.zero;
     countTime();
+
+    ImagesPath imagesPath = ImagesPath();
+    bgImage = imagesPath.getBgPath(widget.value);
   }
 
   @override
@@ -99,18 +106,11 @@ class _WaitingtimeState extends State<Waitingtime> with WidgetsBindingObserver {
         body: Container(
             width: double.infinity,
             height: double.infinity,
-            decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: <Color>[
-                  ColorConstants.backgroundColor,
-                  ColorConstants.backgroundColorGradietEnd
-                ],
-                    stops: [
-                  0.5,
-                  1
-                ])),
+            decoration: BoxDecoration(
+                image: DecorationImage(
+              image: AssetImage('assets/images/$bgImage'),
+              fit: BoxFit.cover,
+            )),
             child: Padding(
                 padding: const EdgeInsets.all(30),
                 child: SafeArea(
@@ -119,8 +119,9 @@ class _WaitingtimeState extends State<Waitingtime> with WidgetsBindingObserver {
                       Align(
                           alignment: Alignment.topCenter,
                           child: Container(
-                            decoration:BoxDecoration(
-                              color: ColorConstants.backgroundColorSub.withOpacity(0.4),
+                            decoration: BoxDecoration(
+                              color: ColorConstants.backgroundColorSub
+                                  .withOpacity(0.4),
                               shape: BoxShape.circle,
                             ),
                             child: Padding(
@@ -142,13 +143,14 @@ class _WaitingtimeState extends State<Waitingtime> with WidgetsBindingObserver {
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              BtnPrimary(
+                              ShadowForBtn(
+                                  child: BtnPrimary(
                                 onPressed: () {
                                   context.push('/qrreader/waitingtime/arcamera',
                                       extra: stageNumber);
                                 },
                                 text: "写真を撮る",
-                              ),
+                              )),
                               const SizedBox(
                                 height: 140,
                               ),
