@@ -90,11 +90,11 @@ class _WaitingtimeState extends State<Waitingtime> with WidgetsBindingObserver {
       int divide = 15;
       stageNumber = (waitingTime ~/ divide);
       setState(() {
-        stage = 'ステージ${(stageNumber + 1).toString()}';
+        stage = 'STAGE${(stageNumber + 1).toString()}';
       });
     } else if (120 <= waitingTime) {
       setState(() {
-        stage = 'ステージMAX';
+        stage = 'STAGE MAX';
       });
     }
   }

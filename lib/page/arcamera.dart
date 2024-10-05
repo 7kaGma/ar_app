@@ -54,17 +54,17 @@ class _ArcameraState extends State<Arcamera> {
   }
 
   // シャッターの制御
-  bool _isShutterEnabled = true;
+  bool _isBtnEnabled = false;
   void _handleShutter() async {
     setState(() {
-      _isShutterEnabled = false;
+      _isBtnEnabled = false;
       _unityWidgetController?.pause();
     });
 
     await _takePhoto();
 
     setState(() {
-      _isShutterEnabled = true;
+      _isBtnEnabled = true;
       _unityWidgetController?.resume();
     });
   }
@@ -75,6 +75,7 @@ class _ArcameraState extends State<Arcamera> {
     _unityWidgetController = controller;
     setState(() {
       _isUnityLoaded = true;
+      _isBtnEnabled = true;
     });
   }
 
@@ -92,6 +93,72 @@ class _ArcameraState extends State<Arcamera> {
         number.toString(),
       );
     }
+  }
+
+  // モーダルウィンドウの表示
+  void showCustomModalBottomSheet(
+    BuildContext context,
+    int stageNumber,
+  ) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true, // モーダルシートのサイズ制御を有効にする
+      enableDrag: true,
+      builder: (context) => SizedBox(
+        height: MediaQuery.of(context).size.height * (2 / 5),
+        child: Container(
+            color: ColorConstants.backgroundColorSub.withOpacity(0.8),
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                children: [
+                    Container(
+                      width: 40,
+                      height: 5,
+                      decoration: BoxDecoration(
+                        color: ColorConstants.frameColor,
+                        borderRadius: BorderRadius.circular(10)
+                      ),
+                    ),
+                  const Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Text(
+                      "ARを切り替える",
+                      style: TextStyle(
+                          fontSize: 16, color: ColorConstants.fontColor),
+                  )),
+                  Expanded(
+                    child: GridView.builder(
+                      padding: const EdgeInsets.only(top: 10),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                        crossAxisSpacing: 10.0,
+                        mainAxisSpacing: 10.0,
+                      ),
+                      itemCount: 8,
+                      itemBuilder: (context, index) {
+                        return ElevatedButton(
+                          onPressed: stageNumber >= index
+                              ? () {
+                                  setState(() {
+                                    sendNumber(index);
+                                  });
+                                }
+                              : null, // stageNumber が index より小さい場合ボタンは無効化
+                          style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16))),
+                          child: Text('STAGE${index+1}'),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            )),
+      ),
+    );
   }
 
   @override
@@ -113,24 +180,32 @@ class _ArcameraState extends State<Arcamera> {
               child: Screenshot(
                   controller: _screenshotController,
                   child: Stack(
+                    fit: StackFit.expand,
                     children: [
+                      UnityWidget(
+                        onUnityCreated: onUnityCreated,
+                        onUnityMessage: onUnityMessage,
+                        fullscreen: false,
+                      ),
                       if (!_isUnityLoaded)
                         Container(
                           color: ColorConstants.backgroundColorSub,
                           child: const Center(
-                            child: Text(
-                              "カメラ起動中",
-                              style: TextStyle(color: ColorConstants.fontColor),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                CircularProgressIndicator(),
+                                SizedBox(height: 16),
+                                Text(
+                                  "カメラ起動中",
+                                  style: TextStyle(
+                                      color: ColorConstants.fontColor),
+                                ),
+                              ],
                             ),
                           ),
                         ),
-                      Expanded(
-                        child: UnityWidget(
-                          onUnityCreated: onUnityCreated,
-                          onUnityMessage: onUnityMessage,
-                          fullscreen: false,
-                        ),
-                      )
+                      
                     ],
                   )),
             )),
@@ -143,47 +218,26 @@ class _ArcameraState extends State<Arcamera> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       IconButton(
-                        onPressed: () => {print("switch")},
                         icon: const Icon(Icons.cameraswitch),
+                        iconSize: 40,
+                        onPressed: _isBtnEnabled
+                            ? () {
+                                print("click");
+                              }
+                            : null,
                       ),
                       BtnShutter(
                           size: 80,
-                          onPressed: _isShutterEnabled ? _handleShutter : null),
+                          onPressed: _isBtnEnabled ? _handleShutter : null),
                       IconButton(
-                        icon: const Icon(Icons.view_in_ar_outlined),
-                        onPressed: () => {
-                          showModalBottomSheet(
-                              context: context,
-                              builder: (context) => SizedBox(
-                                    height: MediaQuery.of(context).size.height *
-                                        (2 / 3),
-                                    child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: GridView.builder(
-                                          gridDelegate:
-                                              const SliverGridDelegateWithFixedCrossAxisCount(
-                                                  crossAxisCount: 3,
-                                                  crossAxisSpacing: 10.0,
-                                                  mainAxisSpacing: 10.0),
-                                          itemCount: 8,
-                                          itemBuilder: (context, index) {
-                                            return ElevatedButton(
-                                              onPressed: widget.stageNumber >=
-                                                      index
-                                                  ? () {
-                                                      setState(() {
-                                                        sendNumber(index);
-                                                      });
-                                                    }
-                                                  : null, // stageNumber が index より小さい場合ボタンは無効化
-                                              child: Text(
-                                                  'ボタン${index.toString()}'),
-                                            );
-                                          },
-                                        )),
-                                  ))
-                        },
-                      )
+                          icon: const Icon(Icons.view_in_ar_outlined),
+                          iconSize: 40,
+                          onPressed: _isBtnEnabled
+                              ? () {
+                                  showCustomModalBottomSheet(
+                                      context, widget.stageNumber);
+                                }
+                              : null)
                     ],
                   ),
                 ),
