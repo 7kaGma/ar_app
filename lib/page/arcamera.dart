@@ -18,7 +18,6 @@ class Arcamera extends StatefulWidget {
 }
 
 class _ArcameraState extends State<Arcamera> {
-  String count = '0'; //Unityからの通信用＿現状不要
   bool _isUnityLoaded = false;
 
   //init関数
@@ -28,13 +27,20 @@ class _ArcameraState extends State<Arcamera> {
     _requestCameraPermission(); // initStateでカメラ権限をリクエスト
   }
 
+  @override
+  void dispose() {
+    // UnityControllerを破棄する
+    _unityWidgetController?.dispose();
+    super.dispose();
+  }
+
   // カメラの権限リクエスト処理
   Future<void> _requestCameraPermission() async {
     if (await Permission.camera.isGranted) {
       // すでにカメラの権限が許可されている場合
     } else {
       // カメラの権限が許可されていない場合、リクエストする
-      PermissionStatus status = await Permission.camera.request();
+      await Permission.camera.request();
     }
   }
 
@@ -79,23 +85,24 @@ class _ArcameraState extends State<Arcamera> {
     });
   }
 
-  void onUnityMessage(dynamic message) {
-    setState(() {
-      count = message.toString();
-    });
-  }
-
-  void sendNumber(int number) {
+  Future<void> sendNumber(int number) async {
     if (_unityWidgetController != null) {
       _unityWidgetController?.postMessage(
-        'ArModel',
-        'SwitchObject',
+        'Scripts',
+        'UpdateDisplayObjectNumber',
         number.toString(),
       );
     }
   }
 
+  Future<void> updateAr() async {
+    if (_unityWidgetController != null) {
+      _unityWidgetController?.postMessage('ArModel', 'SwitchObject', '');
+    }
+  }
+
   // モーダルウィンドウの表示
+  int? selectedButtonIndex = 0;
   void showCustomModalBottomSheet(
     BuildContext context,
     int stageNumber,
@@ -107,26 +114,25 @@ class _ArcameraState extends State<Arcamera> {
       builder: (context) => SizedBox(
         height: MediaQuery.of(context).size.height * (2 / 5),
         child: Container(
-            color: ColorConstants.backgroundColorSub.withOpacity(0.8),
+            decoration: BoxDecoration(
+                color: Colors.white, borderRadius: BorderRadius.circular(16)),
             child: Padding(
               padding: const EdgeInsets.all(20),
               child: Column(
                 children: [
-                    Container(
-                      width: 40,
-                      height: 5,
-                      decoration: BoxDecoration(
-                        color: ColorConstants.frameColor,
-                        borderRadius: BorderRadius.circular(10)
-                      ),
-                    ),
+                  Container(
+                    width: 40,
+                    height: 5,
+                    decoration: BoxDecoration(
+                        color: Colors.grey.shade300,
+                        borderRadius: BorderRadius.circular(10)),
+                  ),
                   const Padding(
-                    padding: EdgeInsets.all(10),
-                    child: Text(
-                      "ARを切り替える",
-                      style: TextStyle(
-                          fontSize: 16, color: ColorConstants.fontColor),
-                  )),
+                      padding: EdgeInsets.all(10),
+                      child: Text(
+                        "ARを切り替える",
+                        style: TextStyle(fontSize: 16, color: Colors.black),
+                      )),
                   Expanded(
                     child: GridView.builder(
                       padding: const EdgeInsets.only(top: 10),
@@ -138,18 +144,43 @@ class _ArcameraState extends State<Arcamera> {
                       ),
                       itemCount: 8,
                       itemBuilder: (context, index) {
-                        return ElevatedButton(
-                          onPressed: stageNumber >= index
-                              ? () {
+                        return GestureDetector(
+                          onTap: stageNumber >= index
+                              ? () async {
+                                  Navigator.pop(context);
                                   setState(() {
-                                    sendNumber(index);
+                                    selectedButtonIndex = index;
                                   });
+
+                                  // 非同期処理を適切に処理
+                                  await sendNumber(index);
+                                  await updateAr();
                                 }
-                              : null, // stageNumber が index より小さい場合ボタンは無効化
-                          style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16))),
-                          child: Text('STAGE${index+1}'),
+                              : null,
+                          child: AnimatedContainer(
+                            duration: const Duration(
+                                milliseconds: 300), // アニメーションの時間を指定
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16),
+                              color: selectedButtonIndex == index
+                                  ? Colors.black
+                                      .withOpacity(0.4) // 選択されたボタンの色を変更
+                                  : Colors.grey.shade300, // デフォルトの色
+                            ),
+                            alignment: Alignment.center,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 20), // ボタンの高さを調整
+                              child: Text(
+                                'STAGE${index + 1}',
+                                style: TextStyle(
+                                  color: stageNumber >= index
+                                      ? ColorConstants.backgroundColor
+                                      : Colors.grey,
+                                ),
+                              ),
+                            ),
+                          ),
                         );
                       },
                     ),
@@ -184,7 +215,6 @@ class _ArcameraState extends State<Arcamera> {
                     children: [
                       UnityWidget(
                         onUnityCreated: onUnityCreated,
-                        onUnityMessage: onUnityMessage,
                         fullscreen: false,
                       ),
                       if (!_isUnityLoaded)
@@ -205,7 +235,6 @@ class _ArcameraState extends State<Arcamera> {
                             ),
                           ),
                         ),
-                      
                     ],
                   )),
             )),

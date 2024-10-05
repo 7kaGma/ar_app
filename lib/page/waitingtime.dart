@@ -35,7 +35,7 @@ class _WaitingtimeState extends State<Waitingtime> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    time = Duration.zero;
+    time = const Duration(minutes: 14);
     countTime();
 
     ImagesPath imagesPath = ImagesPath();
