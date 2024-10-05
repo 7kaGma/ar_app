@@ -8,6 +8,7 @@ import 'package:screenshot/screenshot.dart';
 import 'package:ar_app/component/appbar_custom.dart';
 import 'package:ar_app/component/btn_backward.dart';
 import 'package:ar_app/constant/colors_constant.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class Arcamera extends StatefulWidget {
   const Arcamera({super.key, required this.stageNumber});
@@ -38,15 +39,34 @@ class _ArcameraState extends State<Arcamera> {
   }
 
   //写真を撮影する
-  ScreenshotController screenshotController = ScreenshotController();
-  Future<void> takePhoto() async {
-    Uint8List? capturedImage = await screenshotController.capture();
+  final ScreenshotController _screenshotController = ScreenshotController();
+  final AudioPlayer _audioPlayer = AudioPlayer();
+
+  Future<void> _takePhoto() async {
+    await _audioPlayer.play(AssetSource('sounds/shutter.mp3'));
+    Uint8List? capturedImage = await _screenshotController.capture();
     if (capturedImage != null) {
       context.push('/qrreader/waitingtime/arcamera/preview',
           extra: capturedImage);
     } else {
       print("error");
     }
+  }
+
+  // シャッターの制御
+  bool _isShutterEnabled = true;
+  void _handleShutter() async {
+    setState(() {
+      _isShutterEnabled = false;
+      _unityWidgetController?.pause();
+    });
+
+    await _takePhoto();
+
+    setState(() {
+      _isShutterEnabled = true;
+      _unityWidgetController?.resume();
+    });
   }
 
   // Unity処理
@@ -91,7 +111,7 @@ class _ArcameraState extends State<Arcamera> {
                 child: AspectRatio(
               aspectRatio: 3 / 4,
               child: Screenshot(
-                  controller: screenshotController,
+                  controller: _screenshotController,
                   child: Stack(
                     children: [
                       if (!_isUnityLoaded)
@@ -128,14 +148,13 @@ class _ArcameraState extends State<Arcamera> {
                       ),
                       BtnShutter(
                           size: 80,
-                          onPressed: () {
-                            takePhoto();
-                          }),
+                          onPressed: _isShutterEnabled ? _handleShutter : null),
                       IconButton(
+                        icon: const Icon(Icons.view_in_ar_outlined),
                         onPressed: () => {
                           showModalBottomSheet(
                               context: context,
-                              builder: (context) => Container(
+                              builder: (context) => SizedBox(
                                     height: MediaQuery.of(context).size.height *
                                         (2 / 3),
                                     child: Padding(
@@ -164,9 +183,6 @@ class _ArcameraState extends State<Arcamera> {
                                         )),
                                   ))
                         },
-                        icon: const Icon(
-                          Icons.palette,
-                        ),
                       )
                     ],
                   ),

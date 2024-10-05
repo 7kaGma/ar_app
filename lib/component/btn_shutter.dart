@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class BtnShutter extends StatefulWidget {
   const BtnShutter({super.key, required this.size, required this.onPressed});
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final double size;
 
   @override
