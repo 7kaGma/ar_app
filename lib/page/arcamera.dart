@@ -52,14 +52,25 @@ class _ArcameraState extends State<Arcamera> {
 
   // シャッターの制御
   bool _isBtnEnabled = false;
+  bool _isVisible = false;
   void _handleShutter() async {
     setState(() {
       _isBtnEnabled = false;
+      _isVisible = true;
       _unityWidgetController?.pause();
     });
 
+    // 1秒後に非表示にする
+    await Future.delayed(const Duration(milliseconds: 10), () {
+      setState(() {
+        _isVisible = false;
+      });
+    });
+
+    // 写真を撮る
     await _takePhoto();
 
+    // ボタンを再度有効にしてUnityを再開
     setState(() {
       _isBtnEnabled = true;
       _unityWidgetController?.resume();
@@ -108,85 +119,93 @@ class _ArcameraState extends State<Arcamera> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        extendBodyBehindAppBar: true, // AppBarの背後にbodyを拡張
-        appBar: const AppBarCustom(
-          leading: BtnBackward(),
-        ),
-        body: Expanded(
-            child: Column(
-          children: [
-            Expanded(
-              child: Container(color: ColorConstants.backgroundColorSub),
-            ),
-            Center(
-                child: AspectRatio(
-              aspectRatio: 3 / 4,
-              child: Screenshot(
-                  controller: _screenshotController,
-                  child: Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      UnityWidget(
-                        onUnityCreated: onUnityCreated,
-                        fullscreen: false,
-                      ),
-                      if (!_isUnityLoaded)
-                        Container(
-                          color: ColorConstants.backgroundColorSub,
-                          child: const Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                CircularProgressIndicator(),
-                                SizedBox(height: 16),
-                                Text(
-                                  "カメラ起動中",
-                                  style: TextStyle(
-                                      color: ColorConstants.fontColor),
-                                ),
-                              ],
-                            ),
+      extendBodyBehindAppBar: true, // AppBarの背後にbodyを拡張
+      appBar: const AppBarCustom(
+        leading: BtnBackward(),
+      ),
+      body: Expanded(
+          child: Column(
+        children: [
+          Expanded(
+            child: Container(color: ColorConstants.backgroundColorSub),
+          ),
+          Center(
+              child: AspectRatio(
+            aspectRatio: 3 / 4,
+            child: Screenshot(
+                controller: _screenshotController,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    UnityWidget(
+                      onUnityCreated: onUnityCreated,
+                      fullscreen: false,
+                    ),
+                    Container(
+                      width: double.infinity,
+                      height: double.infinity,
+                      color: _isVisible
+                          ? ColorConstants.backgroundColorSub
+                          : ColorConstants.backgroundColorSub.withOpacity(0),
+                    ),
+                    if (!_isUnityLoaded)
+                      Container(
+                        color: ColorConstants.backgroundColorSub,
+                        child: const Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              CircularProgressIndicator(),
+                              SizedBox(height: 16),
+                              Text(
+                                "カメラ起動中",
+                                style:
+                                    TextStyle(color: ColorConstants.fontColor),
+                              ),
+                            ],
                           ),
                         ),
-                    ],
-                  )),
-            )),
-            Expanded(
-              child: Container(
-                color: ColorConstants.backgroundColorSub,
-                child: Align(
-                  alignment: Alignment.center,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.cameraswitch),
-                        iconSize: 40,
-                        onPressed: _isBtnEnabled ? () {} : null,
                       ),
-                      BtnShutter(
-                          size: 80,
-                          onPressed: _isBtnEnabled ? _handleShutter : null),
-                      IconButton(
-                          icon: const Icon(Icons.view_in_ar_outlined),
-                          iconSize: 40,
-                          onPressed: _isBtnEnabled
-                              ? () {
-                                  showModalBottomSheetAr(
-                                      context,
-                                      "ARの切り替え",
-                                      8,
-                                      widget.stageNumber,
-                                      clickFunction,
-                                      selectedButtonIndex);
-                                }
-                              : null)
-                    ],
-                  ),
+                  ],
+                )),
+          )),
+          Expanded(
+            child: Container(
+              color: ColorConstants.backgroundColorSub,
+              child: Align(
+                alignment: Alignment.center,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.cameraswitch),
+                      iconSize: 40,
+                      onPressed: _isBtnEnabled ? () {} : null,
+                    ),
+                    BtnShutter(
+                        size: 80,
+                        onPressed: _isBtnEnabled ? _handleShutter : null),
+                    IconButton(
+                        icon: const Icon(Icons.view_in_ar_outlined),
+                        iconSize: 40,
+                        onPressed: _isBtnEnabled
+                            ? () {
+                                showModalBottomSheetAr(
+                                    context,
+                                    "ARの切り替え",
+                                    8,
+                                    widget.stageNumber,
+                                    clickFunction,
+                                    selectedButtonIndex);
+                              }
+                            : null)
+                  ],
                 ),
               ),
-            )
-          ],
-        )));
+            ),
+          )
+        ],
+      )),
+    );
   }
 }
