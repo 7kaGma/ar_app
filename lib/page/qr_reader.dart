@@ -62,11 +62,15 @@ class _QrReaderState extends State<QrReader> {
     }
   }
 
+  void initializedMobileScanner(MobileScannerController controller){
+    controller.start();
+  }
+
   // init関数
   @override
   void initState() {
     super.initState();
-    checkCameraPremission(context, controller, this);
+    cameraPermission(context,this,()=>initializedMobileScanner(controller));
   }
 
   //dispose関数
