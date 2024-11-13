@@ -1,0 +1,85 @@
+# Flutterの処理
+# Flutter/Dart/Pub関連
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+/build/
+
+# Android Studioビルド関連
+/android/app/debug
+/android/app/profile
+/android/app/release
+
+# その他のファイル
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+migrate_working_dir/
+
+# IntelliJ関連
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# VSCode設定（必要に応じて有効化）
+# .vscode/
+
+# Unityの処理
+/android/unityLibrary/
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+/UserSettings/
+/MemoryCaptures/
+/Recordings/
+/[Aa]ssets/AssetStoreTools*
+/[Aa]ssets/Plugins/Editor/JetBrains*
+
+# Visual Studioキャッシュと設定
+.vs/
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# Unity3D生成メタファイル
+*.pidb.meta
+*.pdb.meta
+*.mdb.meta
+
+# Unityクラッシュレポート関連
+sysinfo.txt
+
+# ビルド成果物（UnityとFlutter両方）
+*.apk
+*.aab
+*.unitypackage
+*.app
+
+# Crashlytics関連ファイル
+crashlytics-build.properties
+
+# Addressables関連
+/[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
